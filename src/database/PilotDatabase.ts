@@ -20,4 +20,17 @@ export class PilotDatabase extends BaseDatabase {
 
         return pilotsDB;        
     }
+
+    public async findPilotById(id : string){
+        const [ result ] : PilotDB[] | undefined[] = await BaseDatabase
+            .connection(PilotDatabase.TABLE_PILOTS)
+            .where({ id });
+        return result;
+    }
+
+    public async createPilot(newPilotDB : PilotDB){
+        await BaseDatabase
+            .connection(PilotDatabase.TABLE_PILOTS)
+            .insert(newPilotDB);
+    }
 }

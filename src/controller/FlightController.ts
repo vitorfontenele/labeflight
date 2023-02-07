@@ -66,6 +66,33 @@ export class FlightController {
         }
     }
 
+    public updateFlightById = async(req: Request, res: Response) => {
+        try {
+            const { pilotId , departureAirport , arrivalAirport , departureTime } = req.body;
+            const id = req.params.id;
+
+            const input = {
+                pilotId,
+                departureAirport,
+                arrivalAirport,
+                departureTime
+            }
+
+            const flightBusiness = new FlightBusiness();
+            const output = await flightBusiness.updateFlightById(input, id);
+
+            res.status(200).send(output);
+        } catch (error) {
+            console.log(error)
+
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("Erro inesperado")
+            }
+        }
+    }
+
     public deleteFlightById = async(req: Request, res: Response) => {
         try {
             const id = req.params.id;

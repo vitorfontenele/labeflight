@@ -97,6 +97,71 @@ export class FlightBusiness {
         return newFlight;
     }
 
+    public updateFlightById = async(input : any, id : string) => {
+        // id do voo nao vai ser editado
+        const newPilotId = input.pilotId;
+        const newDepartureAirport = input.departureAirport;
+        const newArrivalAirport = input.arrivalAirport;
+        const newDepartureTime = input.departureTime;
+
+        const flightDatabase = new FlightDatabase();
+        const flightToUpdateDB = await flightDatabase.findFlightById(id);
+
+        if (!flightToUpdateDB){
+            throw new NotFoundError("Não há um voo com esse 'id'");
+        }
+
+        const pilotDatabase = new PilotDatabase();
+        const newPilotExists = await pilotDatabase.findPilotById(newPilotId);
+
+        if (newPilotId !== undefined){
+            if (typeof newPilotId !== "string"){
+                throw new BadRequestError ("'pilotId' deve ser uma string");
+            }
+            if (!newPilotExists){
+                throw new NotFoundError ("Não existe um piloto com esse 'pilotId'");
+            }
+        }
+
+        if (newDepartureAirport !== undefined){
+            if (typeof newDepartureAirport !== "string"){
+                throw new BadRequestError ("'departureAirport' deve ser uma string");
+            }
+        }
+
+        if (newArrivalAirport !== undefined){
+            if (typeof newArrivalAirport !== "string"){
+                throw new BadRequestError ("'arrivalAirport' deve ser uma string");
+            }
+        }
+
+        if (newDepartureTime !== undefined){
+            if (typeof newDepartureTime !== "string"){
+                throw new BadRequestError ("'departureTime' deve ser uma string");
+            }
+        }
+
+        const updatedFlight = new Flight(
+            id,
+            newPilotId || flightToUpdateDB.pilot_id,
+            newDepartureAirport || flightToUpdateDB.departure_airport,
+            newArrivalAirport || flightToUpdateDB.arrival_airport,
+            newDepartureTime || flightToUpdateDB.departure_time
+        );
+
+        const updatedFlightDB : FlightDB = {
+            id: updatedFlight.getId(),
+            pilot_id: updatedFlight.getPilotId(),
+            departure_airport: updatedFlight.getDepartureAirport(),
+            arrival_airport: updatedFlight.getArrivalAirport(),
+            departure_time: updatedFlight.getDepartureTime()
+        };
+
+        await flightDatabase.updateFlightById(updatedFlightDB, id);
+
+        return updatedFlight;
+    };
+
     public deleteFlightById = async(id : string) => {
         const flightDatabase = new FlightDatabase();
         const flightDB = await flightDatabase.findFlightById(id);

@@ -24,6 +24,13 @@ export class FlightDatabase extends BaseDatabase {
             .insert(newFlightDB);
     }
 
+    public async updateFlightById(updatedFlightDB: FlightDB, id : string){
+        await BaseDatabase
+            .connection(FlightDatabase.TABLE_FLIGHTS)
+            .update(updatedFlightDB)
+            .where({ id });
+    }
+
     public async deleteFlightById(id : string){
         await BaseDatabase
             .connection(FlightDatabase.TABLE_FLIGHTS)

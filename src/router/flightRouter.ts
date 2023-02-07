@@ -8,4 +8,5 @@ export const flightRouter = express.Router();
 flightRouter.get("/", flightController.getFlights);
 flightRouter.get("/:id", flightController.getFlightById);
 flightRouter.post("/", flightController.createFlight);
+flightRouter.put("/:id", flightController.updateFlightById);
 flightRouter.delete("/:id", flightController.deleteFlightById);

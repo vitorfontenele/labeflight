@@ -1,5 +1,7 @@
 import { FlightDatabase } from "../database/FlightDatabase"
 import { PilotDatabase } from "../database/PilotDatabase";
+import { BadRequestError } from "../errors/BadRequestError";
+import { NotFoundError } from "../errors/NotFoundError";
 import { Flight } from "../models/Flight";
 import { FlightDB } from "../types";
 
@@ -25,7 +27,7 @@ export class FlightBusiness {
         const flightDB = await flightDatabase.findFlightById(id);
 
         if (!flightDB){
-            throw new Error ("Não há um voo com esse 'id'");
+            throw new NotFoundError ("Não há um voo com esse 'id'");
         }
 
         const flight = new Flight(
@@ -47,31 +49,31 @@ export class FlightBusiness {
         const pilotExists = await pilotDatabase.findPilotById(pilotId);
 
         if (typeof id !== "string"){
-            throw new Error ("'id' deve ser uma string");
+            throw new BadRequestError ("'id' deve ser uma string");
         }
 
         if (flightExists){
-            throw new Error ("Já existe um voo com esse 'id'");
+            throw new BadRequestError ("Já existe um voo com esse 'id'");
         }
 
         if (typeof pilotId !== "string"){
-            throw new Error ("'pilotId' deve ser uma string");
+            throw new BadRequestError ("'pilotId' deve ser uma string");
         }
 
         if (!pilotExists){
-            throw new Error ("Não existe um piloto com esse 'pilotId'");
+            throw new NotFoundError ("Não existe um piloto com esse 'pilotId'");
         }
 
         if (typeof departureAirport !== "string"){
-            throw new Error ("'departureAirport' deve ser uma string");
+            throw new BadRequestError ("'departureAirport' deve ser uma string");
         }
 
         if (typeof arrivalAirport !== "string"){
-            throw new Error ("'arrivalAirport' deve ser uma string");
+            throw new BadRequestError ("'arrivalAirport' deve ser uma string");
         }
 
         if (typeof departureTime !== "string"){
-            throw new Error ("'departureTime' deve ser uma string");
+            throw new BadRequestError ("'departureTime' deve ser uma string");
         }
 
         const newFlight = new Flight(

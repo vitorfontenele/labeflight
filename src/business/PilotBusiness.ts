@@ -1,4 +1,6 @@
 import { PilotDatabase } from "../database/PilotDatabase";
+import { BadRequestError } from "../errors/BadRequestError";
+import { NotFoundError } from "../errors/NotFoundError";
 import { Pilot } from "../models/Pilot";
 import { PilotDB } from "../types";
 
@@ -22,7 +24,7 @@ export class PilotBusiness {
         const pilotDB = await pilotDatabase.findPilotById(id);
 
         if (!pilotDB){
-            throw new Error ("Não há um piloto com esse 'id'");
+            throw new NotFoundError ("Não há um piloto com esse 'id'");
         }
 
         const pilot = new Pilot(
@@ -39,28 +41,28 @@ export class PilotBusiness {
         const pilotDatabase = new PilotDatabase();
 
         if (typeof id !== "string"){
-            throw new Error ("'id' deve existir e ser uma string");
+            throw new BadRequestError ("'id' deve existir e ser uma string");
         }
 
         const pilotExists = await pilotDatabase.findPilotById(id);
         if (pilotExists){
-            throw new Error ("Já existe um piloto com esse 'id'");
+            throw new BadRequestError ("Já existe um piloto com esse 'id'");
         }
 
         if (typeof name !== "string"){
-            throw new Error ("'name' deve existir e ser uma string");
+            throw new BadRequestError ("'name' deve existir e ser uma string");
         }
 
         if (name.length < 2){
-            throw new Error ("'name' deve ter no mínimo 2 caracteres");
+            throw new BadRequestError ("'name' deve ter no mínimo 2 caracteres");
         }
 
         if (typeof flightHours !== "number"){
-            throw new Error ("'flightHours' deve existir e ser um number");
+            throw new BadRequestError ("'flightHours' deve existir e ser um number");
         }
 
         if (flightHours <= 0){
-            throw new Error ("'flightHours' deve ser maior do que zero");
+            throw new BadRequestError ("'flightHours' deve ser maior do que zero");
         }
 
         const newPilot = new Pilot (

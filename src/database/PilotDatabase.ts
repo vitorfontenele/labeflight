@@ -33,4 +33,11 @@ export class PilotDatabase extends BaseDatabase {
             .connection(PilotDatabase.TABLE_PILOTS)
             .insert(newPilotDB);
     }
+
+    public async deletePilotById(id : string){
+        await BaseDatabase
+            .connection(PilotDatabase.TABLE_PILOTS)
+            .del()
+            .where({ id });
+    }
 }

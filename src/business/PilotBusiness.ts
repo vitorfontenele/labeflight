@@ -1,3 +1,4 @@
+import { FlightDatabase } from "../database/FlightDatabase";
 import { PilotDatabase } from "../database/PilotDatabase";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
@@ -80,6 +81,29 @@ export class PilotBusiness {
         await pilotDatabase.createPilot(newPilotDB);
 
         return newPilot;
+    }
+
+    public deletePilotById = async(id : string) => {
+        const pilotDatabase = new PilotDatabase();
+        const flightDatabase = new FlightDatabase();
+        const pilotDB = await pilotDatabase.findPilotById(id);
+
+        if (!pilotDB){
+            throw new NotFoundError("Não existe um piloto com esse 'id'");
+        }
+
+        // Deletar primeiro os voos que têm esse piloto
+        await flightDatabase.deleteFlightByPilotId(id);
+        // Deletando o piloto
+        await pilotDatabase.deletePilotById(id);
+
+        const deletedPilot = new Pilot(
+            pilotDB.id,
+            pilotDB.name,
+            pilotDB.flight_hours
+        );
+
+        return deletedPilot;
     }
     
 }

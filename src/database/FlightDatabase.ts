@@ -30,4 +30,11 @@ export class FlightDatabase extends BaseDatabase {
             .del()
             .where({ id });
     }
+
+    public async deleteFlightByPilotId(pilotId : string){
+        await BaseDatabase
+            .connection(FlightDatabase.TABLE_FLIGHTS)
+            .del()
+            .where({pilot_id: pilotId});
+    }
 }

@@ -8,4 +8,5 @@ export const pilotRouter = express.Router();
 pilotRouter.get("/", pilotController.getPilots);
 pilotRouter.get("/:id", pilotController.getPilotById);
 pilotRouter.post("/", pilotController.createPilot);
+pilotRouter.put("/:id", pilotController.updatePilotById);
 pilotRouter.delete("/:id", pilotController.deletePilotById);

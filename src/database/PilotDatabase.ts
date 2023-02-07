@@ -34,6 +34,13 @@ export class PilotDatabase extends BaseDatabase {
             .insert(newPilotDB);
     }
 
+    public async updatePilotById(updatedPilotDB : PilotDB, id : string){
+        await BaseDatabase
+            .connection(PilotDatabase.TABLE_PILOTS)
+            .update(updatedPilotDB)
+            .where({ id });
+    }
+
     public async deletePilotById(id : string){
         await BaseDatabase
             .connection(PilotDatabase.TABLE_PILOTS)

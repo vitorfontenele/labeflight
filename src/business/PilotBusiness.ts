@@ -6,7 +6,7 @@ import { Pilot } from "../models/Pilot";
 import { PilotDB } from "../types";
 
 export class PilotBusiness {
-    public getPilots = async (q : string | undefined) => {
+    public async getPilots (q : string | undefined) {
         const pilotDatabase = new PilotDatabase();
         const pilotsDB = await pilotDatabase.findPilots(q);
 
@@ -19,7 +19,7 @@ export class PilotBusiness {
         return pilots;
     }
 
-    public getPilotById = async(id : string) => {
+    public async getPilotById (id : string) {
         const pilotDatabase = new PilotDatabase();
 
         const pilotDB = await pilotDatabase.findPilotById(id);
@@ -37,7 +37,7 @@ export class PilotBusiness {
         return pilot;
     }
 
-    public createPilot = async (input : any) => {
+    public async createPilot (input : any) {
         const { id , name , flightHours } = input;
         const pilotDatabase = new PilotDatabase();
 
@@ -83,7 +83,54 @@ export class PilotBusiness {
         return newPilot;
     }
 
-    public deletePilotById = async(id : string) => {
+    public async updatePilotById (input : any, id : string){
+        // id do piloto não vai ser atualizado
+        const newName = input.name;
+        const newFlightHours = input.flightHours;
+
+        const pilotDatabase = new PilotDatabase();
+        const pilotToUpdateDB = await pilotDatabase.findPilotById(id);
+
+        if (!pilotToUpdateDB){
+            throw new NotFoundError("Não há um piloto com esse 'id'");
+        }
+
+        if (newName !== undefined){
+            if (typeof newName !== "string"){
+                throw new BadRequestError("'name' precisa ser uma string");
+            }
+            if (newName.length < 2){
+                throw new BadRequestError("'name' precisa ter no mínimo 2 caracteres");
+            }
+        }
+
+        if (newFlightHours !== undefined){
+            if (typeof newFlightHours !== "number"){
+                throw new BadRequestError("'flightHours' precisa ser um number");
+            }
+            if (newFlightHours <= 0){
+                throw new BadRequestError("'flightHours' precisa ser menor ou igual a zero");
+            }
+        }
+
+        const updatedPilot = new Pilot(
+            id,
+            newName || pilotToUpdateDB.name,
+            newFlightHours || pilotToUpdateDB.flight_hours
+        )
+
+        const updatedPilotDB : PilotDB = {
+            id: updatedPilot.getId(),
+            name: updatedPilot.getName(),
+            flight_hours: updatedPilot.getFlightHours()
+        }
+
+        await pilotDatabase.updatePilotById(updatedPilotDB, id);
+
+        return updatedPilot;
+    }
+
+    public async deletePilotById (id : string) {
         const pilotDatabase = new PilotDatabase();
         const flightDatabase = new FlightDatabase();
         const pilotDB = await pilotDatabase.findPilotById(id);

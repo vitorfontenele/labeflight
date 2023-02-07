@@ -6,7 +6,7 @@ import { Flight } from "../models/Flight";
 import { FlightDB } from "../types";
 
 export class FlightBusiness {
-    public getFlights = async() => {
+    public async getFlights() {
         const flightDatabase = new FlightDatabase();
         const flightsDB = await flightDatabase.findFlights();
 
@@ -21,7 +21,7 @@ export class FlightBusiness {
         return flights;
     }
 
-    public getFlightById = async (id : string) => {
+    public async getFlightById  (id : string) {
         const flightDatabase = new FlightDatabase();
 
         const flightDB = await flightDatabase.findFlightById(id);
@@ -41,17 +41,17 @@ export class FlightBusiness {
         return flight;
     }
 
-    public createFlight = async(input : any) => {
+    public async createFlight (input : any) {
         const { id , pilotId , departureAirport , arrivalAirport , departureTime} = input;
         const flightDatabase = new FlightDatabase();
-        const flightExists = await flightDatabase.findFlightById(id);
         const pilotDatabase = new PilotDatabase();
-        const pilotExists = await pilotDatabase.findPilotById(pilotId);
+        
 
         if (typeof id !== "string"){
             throw new BadRequestError ("'id' deve ser uma string");
         }
 
+        const flightExists = await flightDatabase.findFlightById(id);
         if (flightExists){
             throw new BadRequestError ("Já existe um voo com esse 'id'");
         }
@@ -60,6 +60,7 @@ export class FlightBusiness {
             throw new BadRequestError ("'pilotId' deve ser uma string");
         }
 
+        const pilotExists = await pilotDatabase.findPilotById(pilotId);
         if (!pilotExists){
             throw new NotFoundError ("Não existe um piloto com esse 'pilotId'");
         }
@@ -97,7 +98,7 @@ export class FlightBusiness {
         return newFlight;
     }
 
-    public updateFlightById = async(input : any, id : string) => {
+    public async updateFlightById (input : any, id : string) {
         // id do voo nao vai ser editado
         const newPilotId = input.pilotId;
         const newDepartureAirport = input.departureAirport;
@@ -112,12 +113,13 @@ export class FlightBusiness {
         }
 
         const pilotDatabase = new PilotDatabase();
-        const newPilotExists = await pilotDatabase.findPilotById(newPilotId);
-
+        
         if (newPilotId !== undefined){
             if (typeof newPilotId !== "string"){
                 throw new BadRequestError ("'pilotId' deve ser uma string");
             }
+
+            const newPilotExists = await pilotDatabase.findPilotById(newPilotId);
             if (!newPilotExists){
                 throw new NotFoundError ("Não existe um piloto com esse 'pilotId'");
             }
@@ -162,7 +164,7 @@ export class FlightBusiness {
         return updatedFlight;
     };
 
-    public deleteFlightById = async(id : string) => {
+    public async deleteFlightById (id : string) {
         const flightDatabase = new FlightDatabase();
         const flightDB = await flightDatabase.findFlightById(id);
         

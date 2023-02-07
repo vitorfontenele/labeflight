@@ -96,4 +96,25 @@ export class FlightBusiness {
 
         return newFlight;
     }
+
+    public deleteFlightById = async(id : string) => {
+        const flightDatabase = new FlightDatabase();
+        const flightDB = await flightDatabase.findFlightById(id);
+        
+        if (!flightDB){
+            throw new NotFoundError("Não há um voo com esse 'id'");
+        }
+
+        const deletedFlight = new Flight(
+            flightDB.id,
+            flightDB.pilot_id,
+            flightDB.departure_airport,
+            flightDB.arrival_airport,
+            flightDB.departure_time
+        );
+
+        await flightDatabase.deleteFlightById(id);
+
+        return deletedFlight;
+    }
 }

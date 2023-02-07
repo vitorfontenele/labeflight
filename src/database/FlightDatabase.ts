@@ -23,4 +23,11 @@ export class FlightDatabase extends BaseDatabase {
             .connection(FlightDatabase.TABLE_FLIGHTS)
             .insert(newFlightDB);
     }
+
+    public async deleteFlightById(id : string){
+        await BaseDatabase
+            .connection(FlightDatabase.TABLE_FLIGHTS)
+            .del()
+            .where({ id });
+    }
 }

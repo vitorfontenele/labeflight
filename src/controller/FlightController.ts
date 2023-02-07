@@ -65,4 +65,23 @@ export class FlightController {
             }
         }
     }
+
+    public deleteFlightById = async(req: Request, res: Response) => {
+        try {
+            const id = req.params.id;
+
+            const flightBusiness = new FlightBusiness();
+            const output = await flightBusiness.deleteFlightById(id);
+
+            res.status(200).send(output);
+        } catch (error) {
+            console.log(error)
+
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("Erro inesperado")
+            }
+        }
+    }
 }
